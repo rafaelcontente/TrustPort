@@ -11,7 +11,7 @@ def test_g1_rejects_zero_and_negative_dsti():
         )
         result = validator.validate(proposal)
         assert result.outcome == OutcomeEnum.REPAIRED
-        assert "strictly positive" in result.explanation
+        assert "DSTI > 0" in result.explanation
 
 def test_g1_rejects_nan_and_inf():
     validator = PortValidator()

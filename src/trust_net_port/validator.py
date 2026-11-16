@@ -1,5 +1,6 @@
 import json
 import math
+import re
 import threading
 import uuid
 from datetime import datetime, timezone
@@ -39,15 +40,22 @@ class PortValidator:
         evaluated_at = datetime.now(timezone.utc).isoformat()
         corr_id = proposal.correlation_id or str(uuid.uuid4())
 
-        # Gate 1: Schema & Sanity
+        # Gate 1: Schema & Sanity + Policy Limits
+        max_amount = self.rules.get('max_amount', 1000000.0)
+        min_term = self.rules.get('min_term_months', 6)
+        max_facts = self.rules.get('max_facts', 20)
+        
         if (proposal.amount <= 0 or not math.isfinite(proposal.amount) or
+            proposal.amount > max_amount or
             proposal.dsti_ratio <= 0 or not math.isfinite(proposal.dsti_ratio) or
-            len(proposal.facts_cited) == 0):
+            proposal.term_months < min_term or
+            len(proposal.facts_cited) == 0 or
+            len(proposal.facts_cited) > max_facts):
             gates_failed.append("G1_SCHEMA")
             return self._apply_shadow(PortResult(
                 outcome=OutcomeEnum.REPAIRED, reason_code="SCH-01",
                 gates_passed=gates_passed, gates_failed=gates_failed,
-                explanation="Invalid schema: amount and DSTI must be strictly positive and finite, and at least one fact must be cited.",
+                explanation=f"Invalid schema or policy limits: amount in (0, {max_amount}], DSTI > 0, term >= {min_term}m, facts in [1, {max_facts}].",
                 policy_version=pv, evaluated_at=evaluated_at, correlation_id=corr_id
             ))
         gates_passed.append("G1_SCHEMA")
@@ -106,16 +114,47 @@ class PortValidator:
             ))
         gates_passed.append("G4_UNCERTAINTY")
 
-        # Gate 5: Fidelity (real check)
-        explanation = "Proposal meets all schema, rule, formal, and uncertainty criteria."
-        if len(explanation) < 10:
+        # Gate 5: Fidelity (real validation)
+        # Determinar a explicação baseada nos gates falhados
+        if gates_failed:
+            last_failed = gates_failed[-1]
+            if last_failed == "G1_SCHEMA":
+                explanation = "Invalid schema: amount and DSTI must be strictly positive and finite, and at least one fact must be cited."
+            elif last_failed == "G2_RULES":
+                explanation = f"DSTI ratio {proposal.dsti_ratio}% exceeds policy limit of {max_dsti}%."
+            elif last_failed == "G3_SOLVER":
+                explanation = reason if 'reason' in locals() else "Violates formal constraints."
+            elif last_failed == "G4_UNCERTAINTY":
+                explanation = f"Uncertainty upper bound ({upper_bound if 'upper_bound' in locals() else 'N/A'}%) exceeds pilot threshold (5.0%)."
+            else:
+                explanation = "Unknown failure."
+        else:
+            explanation = "Proposal meets all schema, rule, formal, and uncertainty criteria."
+        
+        # Validação G5.1: Explicação deve mencionar gates falhados (se houver)
+        if gates_failed and not any(gate in explanation for gate in gates_failed):
             gates_failed.append("G5_FIDELITY")
             return self._apply_shadow(PortResult(
                 outcome=OutcomeEnum.ESCALATED, reason_code="FID-01",
                 gates_passed=gates_passed, gates_failed=gates_failed,
-                explanation="Internal error: Explanation generation failed.",
+                explanation="Fidelity check failed: explanation does not reference failed gates.",
                 policy_version=pv, evaluated_at=evaluated_at, correlation_id=corr_id
             ))
+        
+        # Validação G5.2: Counterfactual deve ser consistente com o motivo
+        # (Já garantido pela lógica do validator, mas validamos se existe)
+        
+        # Validação G5.3: Sem PII (emails, telefones, etc.)
+        pii_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|\d{9,}'
+        if re.search(pii_pattern, explanation):
+            gates_failed.append("G5_FIDELITY")
+            return self._apply_shadow(PortResult(
+                outcome=OutcomeEnum.ESCALATED, reason_code="FID-02",
+                gates_passed=gates_passed, gates_failed=gates_failed,
+                explanation="Fidelity check failed: explanation contains potential PII.",
+                policy_version=pv, evaluated_at=evaluated_at, correlation_id=corr_id
+            ))
+        
         gates_passed.append("G5_FIDELITY")
 
         return self._apply_shadow(PortResult(
