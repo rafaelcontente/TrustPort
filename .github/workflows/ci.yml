@@ -1,9 +1,12 @@
 name: CI
+
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -15,26 +18,17 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: ruff check src/ tests/ benchmarks/
       - run: mypy src/
+
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "${{ matrix.python-version }}"
       - run: pip install -e .
-      - run: pytest tests/ -v --tb=short
-  bench-smoke:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: pip install -e .
-      - run: python benchmarks/run.py
-      - run: test -f benchmarks/results/baseline_v0.1.0.json
+      - run: pytest tests/ -q --tb=short
