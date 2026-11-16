@@ -1,41 +1,21 @@
 # 🛡️ TrustPort
 
-### 🛡️ Quality & Safety
+**Port: mandatory validation for AI outputs.**
 
 [![CI](https://github.com/rafaelcontente/TrustPort/actions/workflows/ci.yml/badge.svg?branch=main&style=flat)](https://github.com/rafaelcontente/TrustPort/actions)
 [![Coverage](https://img.shields.io/badge/coverage-84%25-brightgreen?style=flat&logo=codecov)](https://github.com/rafaelcontente/TrustPort)
 [![Tests](https://img.shields.io/badge/tests-71%20passing-blue?style=flat&logo=pytest)](https://github.com/rafaelcontente/TrustPort)
-[![Z3 Verified](https://img.shields.io/badge/Z3-formal_verification-purple?style=flat&logo=github)](https://github.com/Z3Prover/z3)
+[![Z3](https://img.shields.io/badge/Z3-formal_verification-purple?style=flat&logo=github)](https://github.com/Z3Prover/z3)
 [![Hypothesis](https://img.shields.io/badge/Hypothesis-property_testing-orange?style=flat)](https://hypothesis.readthedocs.io/)
 [![Fail-Closed](https://img.shields.io/badge/fail--closed-strict-red?style=flat)](https://github.com/rafaelcontente/TrustPort)
-
-### 🛠️ Stack
-
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=flat&logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Pydantic](https://img.shields.io/badge/Pydantic-v2-003670?style=flat&logo=pydantic)](https://docs.pydantic.dev/)
 [![Ruff](https://img.shields.io/badge/ruff-formatted-41B883?style=flat&logo=ruff)](https://docs.astral.sh/ruff/)
 [![Mypy](https://img.shields.io/badge/mypy-type_checked-2B65EC?style=flat&logo=mypy)](https://mypy-lang.org/)
-[![Pydantic](https://img.shields.io/badge/Pydantic-v2-003670?style=flat&logo=pydantic)](https://docs.pydantic.dev/)
-
-### 🤝 Community
-
 [![License](https://img.shields.io/badge/license-MIT-22c55e?style=flat)](LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/rafaelcontente/TrustPort?style=flat&logo=git)](https://github.com/rafaelcontente/TrustPort/commits/main/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat&logo=github)](https://github.com/rafaelcontente/TrustPort/pulls)
-
-**Port: mandatory validation for AI outputs.**
-
-[![CI](https://github.com/rafaelcontente/TrustPort/actions/workflows/ci.yml/badge.svg?branch=main&style=for-the-badge)](https://github.com/rafaelcontente/TrustPort/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/badge/coverage-84%25-brightgreen?style=for-the-badge&logo=codecov)](https://github.com/rafaelcontente/TrustPort)
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
-[![Z3 Verified](https://img.shields.io/badge/Z3-formal_verification-purple?style=for-the-badge&logo=github)](https://github.com/Z3Prover/z3)
-[![Hypothesis](https://img.shields.io/badge/Hypothesis-property_testing-orange?style=for-the-badge)](https://hypothesis.readthedocs.io/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![Ruff](https://img.shields.io/badge/ruff-formatted-41B883?style=for-the-badge&logo=ruff)](https://docs.astral.sh/ruff/)
-[![Mypy](https://img.shields.io/badge/mypy-type_checked-2B65EC?style=for-the-badge&logo=mypy)](https://mypy-lang.org/)
-[![License](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](LICENSE)
-[![Last Commit](https://img.shields.io/github/last-commit/rafaelcontente/TrustPort?style=for-the-badge&logo=git)](https://github.com/rafaelcontente/TrustPort/commits/main/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge&logo=github)](https://github.com/rafaelcontente/TrustPort/pulls)
 
 ## 🎯 The Problem
 
