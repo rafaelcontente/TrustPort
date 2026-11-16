@@ -1,6 +1,7 @@
+
 import numpy as np
 from sklearn.base import BaseEstimator
-from typing import Tuple
+
 
 class SplitConformalPredictor:
     def __init__(self, base_model: BaseEstimator, alpha: float = 0.10):
@@ -18,6 +19,6 @@ class SplitConformalPredictor:
         q_level = min(q_level, 1.0)
         self.quantile = float(np.quantile(residuals, q_level))
 
-    def predict_interval(self, X_test: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def predict_interval(self, X_test: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         y_pred = self.base_model.predict(X_test)
         return y_pred - self.quantile, y_pred, y_pred + self.quantile

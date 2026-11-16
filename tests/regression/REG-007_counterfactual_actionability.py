@@ -1,6 +1,6 @@
-import pytest
 from trust_net_port.schema.contracts import AgentProposal, OutcomeEnum
 from trust_net_port.validator import PortValidator
+
 
 def test_counterfactual_mutation_proves_actionability():
     """

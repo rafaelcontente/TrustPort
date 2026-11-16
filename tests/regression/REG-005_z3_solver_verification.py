@@ -1,6 +1,6 @@
-import pytest
 from trust_net_port.schema.contracts import AgentProposal, OutcomeEnum
 from trust_net_port.validator import PortValidator
+
 
 def test_g3_z3_passes_valid_high_amount_with_long_term():
     # Amount > 50k, but term >= 36. G2 passes (DSTI 30%), G3 should PASS.

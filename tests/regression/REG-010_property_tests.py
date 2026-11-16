@@ -1,7 +1,8 @@
-import pytest
 import random
+
 from trust_net_port.schema.contracts import AgentProposal, OutcomeEnum
 from trust_net_port.validator import PortValidator
+
 
 def generate_invalid_proposal():
     """Gera uma proposta inválida aleatória."""

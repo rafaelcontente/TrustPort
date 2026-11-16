@@ -1,6 +1,6 @@
-import pytest
 from trust_net_port.schema.contracts import AgentProposal, OutcomeEnum
 from trust_net_port.validator import PortValidator
+
 
 def test_shadow_mode_approves_but_logs_real_decision():
     """Em shadow mode, propostas que seriam recusadas são aprovadas, mas o motivo real é registado."""

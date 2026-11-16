@@ -1,5 +1,7 @@
-from z3 import Solver, Real, Int, Or, sat
+from z3 import Int, Or, Real, Solver, sat
+
 from trust_net_port.schema.contracts import AgentProposal
+
 
 def verify_constraints(proposal: AgentProposal, high_amount_threshold: float = 50000.0, min_term: int = 36) -> tuple[bool, str]:
     s = Solver()

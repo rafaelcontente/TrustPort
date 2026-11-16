@@ -1,7 +1,8 @@
-import pytest
 import time
+
 from trust_net_port.schema.contracts import AgentProposal
 from trust_net_port.validator import PortValidator
+
 
 def test_performance_latency_and_throughput():
     """Mede latência p50/p95/p99 e throughput."""
@@ -28,12 +29,12 @@ def test_performance_latency_and_throughput():
     p99 = latencies[int(n * 0.99)]
     throughput = n / total_time
     
-    print(f"\n--- Performance Metrics ---")
+    print("\n--- Performance Metrics ---")
     print(f"Throughput: {throughput:.2f} proposals/sec")
     print(f"Latency p50: {p50:.3f} ms")
     print(f"Latency p95: {p95:.3f} ms")
     print(f"Latency p99: {p99:.3f} ms")
-    print(f"---------------------------\n")
+    print("---------------------------\n")
     
     # Asserts básicos de performance (ajustar conforme ambiente)
     assert p99 < 100, f"Latência p99 demasiado alta: {p99}ms"

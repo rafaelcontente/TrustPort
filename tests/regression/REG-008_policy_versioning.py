@@ -1,9 +1,9 @@
-import pytest
-import json
 import copy
-from pathlib import Path
+import json
+
 from trust_net_port.schema.contracts import AgentProposal, OutcomeEnum
 from trust_net_port.validator import PortValidator
+
 
 def test_policy_version_is_attached_to_result():
     validator = PortValidator()

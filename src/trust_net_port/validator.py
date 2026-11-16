@@ -1,8 +1,10 @@
 import json
-from pathlib import Path
 from datetime import datetime, timezone
-from .schema.contracts import AgentProposal, PortResult, OutcomeEnum
+from pathlib import Path
+
+from .schema.contracts import AgentProposal, OutcomeEnum, PortResult
 from .solver.z3_verifier import verify_constraints
+
 
 class ConformalUncertaintyEstimator:
     def __init__(self, base_uncertainty: float = 2.5):
@@ -26,8 +28,8 @@ class PortValidator:
         self.shadow_mode = enabled
 
     def validate(self, proposal: AgentProposal) -> PortResult:
-        gates_passed = []
-        gates_failed = []
+        gates_passed: list[str] = []
+        gates_failed: list[str] = []
         pv = self.policy["version"]
         evaluated_at = datetime.now(timezone.utc).isoformat()
         corr_id = proposal.correlation_id or "UNKNOWN"

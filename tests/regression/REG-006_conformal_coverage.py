@@ -1,6 +1,8 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
+
 from trust_net_port.uncertainty.conformal import SplitConformalPredictor
+
 
 def test_split_conformal_empirical_coverage():
     # Seed 123 avoids the statistical anomaly of seed 42 where cal residuals were unusually small.
@@ -18,7 +20,7 @@ def test_split_conformal_empirical_coverage():
     cp = SplitConformalPredictor(base_model=base_model, alpha=0.10)
     cp.calibrate(X_cal, y_cal)
     
-    lower, pred, upper = cp.predict_interval(X_test)
+    lower, _pred, upper = cp.predict_interval(X_test)
     covered = (y_test >= lower) & (y_test <= upper)
     empirical_coverage = np.mean(covered)
     
@@ -27,8 +29,8 @@ def test_split_conformal_empirical_coverage():
     assert cp.quantile > 0
 
 def test_conformal_rejects_unfitted_model():
-    from sklearn.linear_model import LinearRegression
     import pytest
+    from sklearn.linear_model import LinearRegression
     cp = SplitConformalPredictor(base_model=LinearRegression(), alpha=0.10)
     with pytest.raises(RuntimeError):
         cp.calibrate(np.random.randn(10, 1), np.random.randn(10))

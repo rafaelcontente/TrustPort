@@ -1,7 +1,8 @@
-import pytest
 from datetime import datetime
-from trust_net_port.schema.contracts import AgentProposal, OutcomeEnum
+
+from trust_net_port.schema.contracts import AgentProposal
 from trust_net_port.validator import PortValidator
+
 
 def test_audit_readiness_fields_are_populated():
     validator = PortValidator()
