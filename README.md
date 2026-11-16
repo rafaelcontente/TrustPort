@@ -65,7 +65,7 @@ Full tables and methodology live in [EVALUATION.md](docs/EVALUATION.md).
 
 Honesty over hype — what is not done yet:
 
-- 🧪 G3 (SMT) and G4 (conformal) are heuristic placeholders today; real Z3 proofs and split-conformal calibration are the next milestone.
+- 🧪 G3 enforces formal Z3 constraints (e.g., high amount requires long term). G4 uses a deterministic uncertainty heuristic for the pilot, with a full Split-Conformal engine built and tested (see REG-006) pending a trained base model.; real Z3 proofs and split-conformal calibration are the next milestone.
 - 📉 Calibration runs on synthetic data, not production credit portfolios.
 - 🗂️ TrustPort validates but never stores; immutable logging belongs to TrustAudit.
 
