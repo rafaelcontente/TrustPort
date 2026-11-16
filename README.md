@@ -90,3 +90,14 @@ TrustPort is one gate in a larger trust layer. It speaks Pydantic contracts — 
 ## 📄 License
 
 MIT — see [LICENSE](LICENSE).
+
+## HTTP API
+
+TrustPort exposes a REST API with automatic OpenAPI spec.
+
+```bash
+uvicorn trust_net_port.api:app --reload   # start server
+open http://localhost:8000/docs           # interactive docs
+```
+
+Endpoints: POST /validate, GET /health, GET /stats. Every decision is logged to the SQLite audit store with chained hashes.
