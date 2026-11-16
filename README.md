@@ -5,7 +5,7 @@
 [![CI](https://github.com/rafaelcontente/TrustPort/actions/workflows/ci.yml/badge.svg)](https://github.com/rafaelcontente/TrustPort/actions)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e)](LICENSE)
-[![Gates](https://img.shields.io/badge/gates-5_serial-8b5cf6)](ARCHITECTURE.md)
+[![Gates](https://img.shields.io/badge/gates-5_serial-8b5cf6)](docs/ARCHITECTURE.md)
 
 ## 🎯 The Problem
 
@@ -49,7 +49,7 @@ graph TD
     style ESC fill:#f59e0b,stroke:#d97706,color:#fff
 ```
 
-One proposal, five serial gates, zero silent passes. The first gate to say no stops the run and returns a typed `PortResult`: outcome, reason code, counterfactual. 🟢 green is safe to execute, 🔵 blue goes back to the agent for repair, 🟠 amber waits for a human, 🔴 red ends with an explanation the customer can act on. Deep dive in [ARCHITECTURE.md](ARCHITECTURE.md).
+One proposal, five serial gates, zero silent passes. The first gate to say no stops the run and returns a typed `PortResult`: outcome, reason code, counterfactual. 🟢 green is safe to execute, 🔵 blue goes back to the agent for repair, 🟠 amber waits for a human, 🔴 red ends with an explanation the customer can act on. Deep dive in [ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## 📊 Evaluation
 
@@ -59,7 +59,7 @@ Baseline: synthetic credit pilot — 9 regression tests, all green. Only measure
 - 💬 **100%** of refusals ship with an actionable counterfactual, not just a no (REG-003).
 - 🎯 **ECE < 0.05** on the synthetic calibration fixture (REG-002).
 
-Full tables and methodology live in [EVALUATION.md](EVALUATION.md).
+Full tables and methodology live in [EVALUATION.md](docs/EVALUATION.md).
 
 ## ⚠️ Limitations
 
@@ -69,7 +69,7 @@ Honesty over hype — what is not done yet:
 - 📉 Calibration runs on synthetic data, not production credit portfolios.
 - 🗂️ TrustPort validates but never stores; immutable logging belongs to TrustAudit.
 
-Context and mitigations in [LIMITATIONS.md](LIMITATIONS.md).
+Context and mitigations in [LIMITATIONS.md](docs/LIMITATIONS.md).
 
 ## 🧩 Composition
 
@@ -77,10 +77,10 @@ TrustPort is one gate in a larger trust layer. It speaks Pydantic contracts — 
 
 ## 📚 Documentation
 
-- 🏗️ [ARCHITECTURE.md](ARCHITECTURE.md) — gates, contracts, fail-fast design
-- 📊 [EVALUATION.md](EVALUATION.md) — benchmarks and methodology
-- ⚠️ [LIMITATIONS.md](LIMITATIONS.md) — what is not proven yet
-- 🗺️ [ROADMAP.md](ROADMAP.md) — real Z3, real conformal, SHAP explanations
+- 🏗️ [ARCHITECTURE.md](docs/ARCHITECTURE.md) — gates, contracts, fail-fast design
+- 📊 [EVALUATION.md](docs/EVALUATION.md) — benchmarks and methodology
+- ⚠️ [LIMITATIONS.md](docs/LIMITATIONS.md) — what is not proven yet
+- 🗺️ [ROADMAP.md](docs/ROADMAP.md) — real Z3, real conformal, SHAP explanations
 - 🔌 [docs/api.md](docs/api.md) — contract reference
 
 ## 📄 License

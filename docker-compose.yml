@@ -1,0 +1,9 @@
+services:
+  trustport:
+    build: .
+    volumes:
+      - ./benchmarks/results:/app/benchmarks/results
+    command: bash benchmarks/reproduce.sh
+  test:
+    build: .
+    command: pytest tests/ -v --tb=short
