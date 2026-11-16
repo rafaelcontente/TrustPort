@@ -89,7 +89,7 @@ Full context and evidence in [LIMITATIONS.md](docs/LIMITATIONS.md).
 
 TrustPort is one gate in a larger trust layer. It speaks Pydantic contracts — `AgentProposal`, `PortResult`, `OutcomeEnum` — with **TrustAgent**, which proposes but never executes, and **TrustAudit**, which records every outcome in an append-only hash chain. Cited facts from **TrustKnowledge** feed the Gate 4 uncertainty penalty: fewer sources, wider bounds, faster escalation.
 
-## 📚 Documentation
+## 🧪 Examples\n\n- **General Use Demo:** See how TrustPort works for any domain (Real Estate with open data, Generic without data):\n  ```bash\n  python examples/general_use_demo.py\n  ```\n\n## 📚 Documentation
 
 - 🏗️ [ARCHITECTURE.md](docs/ARCHITECTURE.md) — gates, contracts, fail-fast design
 - 📊 [EVALUATION.md](docs/EVALUATION.md) — benchmarks and methodology

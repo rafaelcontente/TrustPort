@@ -4,6 +4,7 @@ Example 2: Rule Violation
 from trust_net_port.schema.contracts import AgentProposal
 from trust_net_port.validator import PortValidator
 
+
 def main():
     proposal = AgentProposal(
         proposal_id="EX-002",
