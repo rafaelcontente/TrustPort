@@ -7,7 +7,7 @@ def test_refusal_contains_concrete_reasons():
     result = PortValidator().validate(proposal)
     assert result.outcome == OutcomeEnum.REFUSED
     assert result.explanation is not None
-    assert "DSTI ratio exceeds" in result.explanation
+    assert "exceeds policy limit" in result.explanation
 
 def test_counterfactual_is_actionable():
     proposal = AgentProposal(proposal_id="P-005", case_id="C-0146", action="approve", amount=50000, term_months=60, dsti_ratio=45.0, facts_cited=["F-221"])

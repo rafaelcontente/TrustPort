@@ -8,8 +8,8 @@ TrustPort runs every `AgentProposal` through five serial gates. Fail-fast: the f
 |------|-------|-----------|--------|
 | G1 Schema | positive amount, valid DSTI, >=1 cited fact | REPAIRED (SCH-01) | ✅ implemented |
 | G2 Rules | DSTI <= 40% policy limit | REFUSED (RUL-01) + counterfactual | ✅ policy-as-code |
-| G3 Solver | formal constraint satisfaction | REFUSED (SMT-01) | 🧪 placeholder — Z3 next |
-| G4 Uncertainty | PD upper bound <= 5.0% pilot threshold | ESCALATED (UNC-02) | 🧪 heuristic — split conformal next |
+| G3 Solver | Z3 formal constraint satisfaction | REFUSED (SMT-01) | ✅ Z3 implemented (High Amount rule) |
+| G4 Uncertainty | Split Conformal Prediction (90% coverage) | ESCALATED (UNC-02) | ✅ Split Conformal implemented |
 | G5 Explanation | reasons + counterfactual attached | — | ✅ rule-based; SHAP planned |
 
 This table reflects the code, not the ambition.

@@ -24,7 +24,7 @@ Not a chatbot. Not a generic input validator. It is the gate between an LLM and 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
-pytest tests/regression/port/ -v
+pytest tests/ -vregression/ -v
 ```
 
 Four commands, under five minutes — nine regression tests prove the gate holds.

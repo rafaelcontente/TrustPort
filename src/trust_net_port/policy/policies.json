@@ -1,0 +1,1 @@
+{"version": "1.0.0", "effective_date": "2026-01-01", "source": "Banco de Portugal - Aviso n.\u00ba 5/2023 (Simulated)", "rules": {"max_dsti_ratio": 0.4, "high_amount_threshold": 50000.0, "min_term_for_high_amount": 36}}

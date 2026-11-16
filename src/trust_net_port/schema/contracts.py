@@ -17,6 +17,7 @@ class AgentProposal(BaseModel):
     term_months: int
     dsti_ratio: float
     facts_cited: list[str]
+    correlation_id: str | None = None
 
 class PortResult(BaseModel):
     outcome: OutcomeEnum
@@ -25,3 +26,6 @@ class PortResult(BaseModel):
     gates_failed: list[str]
     counterfactual: str | None = None
     explanation: str | None = None
+    policy_version: str | None = None
+    evaluated_at: str | None = None
+    correlation_id: str | None = None
