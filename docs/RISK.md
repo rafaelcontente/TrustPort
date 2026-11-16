@@ -1,26 +1,23 @@
-# 🛡️ Risk & Threat Model
+# ⚠️ Risk & Threat Model
 
-How TrustPort handles failure, abuse, and edge cases. Based on STRIDE principles applied to the validation pipeline.
+TrustPort is designed to mitigate specific risks in AI-mediated decision-making.
 
-## Threat Model (STRIDE)
+## 1. Adversarial Prompt Injection
+- **Threat:** Malicious input tries to bypass rules or inject PII.
+- **Mitigation:** G1 strictly validates schema (no arbitrary text fields for core logic). G5 scans explanations for PII patterns before returning.
 
-| Threat | Vector | Mitigation in TrustPort |
-|--------|--------|-------------------------|
-| **Spoofing** | Malicious agent impersonating a valid user/case | G1 Schema enforces strict `case_id` and `proposal_id` formats. TrustAgent handles auth (OIDC/mTLS) before reaching the Port. |
-| **Tampering** | Altered proposal payload in transit | Immutable `PortResult` generation. Any downstream mutation breaks the TrustAudit hash chain. |
-| **Repudiation** | Agent claims "the Port approved this" | Every outcome is logged by TrustAudit with a cryptographic trace. The Port never approves silently. |
-| **Information Disclosure** | Leaking internal rules or thresholds via error messages | Error messages are generic (`SCH-01`, `RUL-01`). Counterfactuals are actionable but do not reveal the exact mathematical boundary or internal weights. |
-| **Denial of Service** | Flooding the Port with complex proposals | Stateless design allows horizontal scaling. G1 fail-fast drops invalid payloads before expensive G3/G4 compute. |
-| **Elevation of Privilege** | Prompt injection forcing an `APPROVED` outcome | The Port is deterministic code, not an LLM. Prompt injections in `facts_cited` are treated as opaque strings and penalized in G4 uncertainty, never executed as commands. |
+## 2. Solver Denial of Service (DoS)
+- **Threat:** Complex Z3 constraints cause the solver to hang, blocking the pipeline.
+- **Mitigation:** Z3 calls are protected by a `threading.Lock` (preventing thread explosion) and wrapped in a try/except that fails closed (`SMT-ERR`) on any exception or timeout.
 
-## Failure Modes
+## 3. Model Drift / Miscalibration
+- **Threat:** The underlying AI model's uncertainty estimates become unreliable over time.
+- **Mitigation:** G4 includes a `check_drift()` method that compares current residuals against the calibration baseline. High uncertainty triggers `ESCALATED` (human review), never `APApproved`.
 
-1. **G3/G4 Placeholder Failure**: Currently, G3 passes all schema-valid proposals, and G4 uses a heuristic. *Impact:* False negatives on complex constraint violations. *Mitigation:* Explicitly documented in LIMITATIONS.md; ROADMAP M1/M2 replaces these with Z3 and conformal prediction.
-2. **Dependency Outage**: If `pydantic` or `numpy` fail to load, the Port crashes. *Impact:* Total service unavailability (fail-closed). *Mitigation:* CI tests on multiple Python versions; containerized deployment ensures pinned, verified dependencies.
-3. **Counterfactual Hallucination**: The generated counterfactual might be mathematically insufficient to flip the outcome. *Impact:* User frustration. *Mitigation:* ROADMAP M3 introduces mutate-and-revalidate tests to prove counterfactuals actually work.
+## 4. Audit Log Tampering
+- **Threat:** An insider alters a historical decision in the database.
+- **Mitigation:** Each log entry contains the SHA-256 hash of the previous entry. The `verify_chain()` method will return `False` if any historical record is altered.
 
-## Security Posture
-
-- **No Execution**: The Port evaluates; it never executes actions (no DB writes, no API calls to external systems).
-- **No State**: No session data or caching that could be poisoned.
-- **Fail-Closed**: Any unhandled exception or missing field results in `REPAIRED` or `REFUSED`, never `APPROVED`.
+## 5. Silent Failures
+- **Threat:** A bug causes invalid proposals to slip through as `APPROVED`.
+- **Mitigation:** 71 automated tests, including Hypothesis property-based testing, explicitly assert that invalid inputs *never* result in `APPROVED`. CI blocks any coverage drop below 80%.

@@ -1,31 +1,33 @@
-# 📝 Architectural Decision Records (ADRs)
+# 📜 Architectural Decision Records (ADRs)
 
-Significant technical choices, why they were made, and their trade-offs.
+This document records the structural decisions made in TrustPort.
 
-## ADR-001: Strict Pydantic Contracts for Module Boundaries
+## ADR-001: Maker-Checker Architecture
+**Status:** Accepted
+**Context:** LLMs are prone to hallucinations and rule violations.
+**Decision:** TrustPort acts strictly as the "Checker". It never generates proposals. The "Maker" (TrustAgent) proposes, and the Port validates deterministically.
+**Consequences:** Clear separation of concerns. The Port can be audited independently of the LLM.
 
-- **Status:** Accepted
-- **Context:** TrustPort must communicate with TrustAgent and TrustAudit without tight coupling.
-- **Decision:** All inputs (`AgentProposal`) and outputs (`PortResult`) are strictly typed Pydantic models.
-- **Consequences:** Breaking changes require a version bump. Validation is automatic and deterministic. No implicit type coercion from LLM outputs.
+## ADR-002: Fail-Closed on External Dependencies
+**Status:** Accepted
+**Context:** Z3 solver or Conformal engine might timeout or crash.
+**Decision:** Any exception in G3 (Z3) or G4 (Conformal) immediately returns `REFUSED` (SMT-ERR) or `ESCALATED`. It never defaults to `APPROVED`.
+**Consequences:** Maximum safety, potential false positives under heavy load, which is acceptable for credit/compliance.
 
-## ADR-002: Fail-Fast Serial Gates
+## ADR-003: Shadow Mode is Strictly Observational
+**Status:** Accepted
+**Context:** Need to test new policies/models without impacting production.
+**Decision:** Shadow mode records the hypothetical outcome in `shadow_outcome` and `shadow_reason_code`, but **never** alters the primary `outcome`.
+**Consequences:** Safe A/B testing. Audit logs reflect the actual decision made, with shadow data available for analysis.
 
-- **Status:** Accepted
-- **Context:** Running all 5 gates on an invalid proposal wastes compute and obscures the root cause.
-- **Decision:** The pipeline stops at the first failing gate. The `PortResult` contains only the gates evaluated up to that point.
-- **Consequences:** Faster rejection. Callers must fix G1 issues before G2 rules are even evaluated. Counterfactuals are tied to the specific failing gate.
+## ADR-004: Marginal Conformal over Conditional (for v1.0)
+**Status:** Accepted
+**Context:** Conditional (Mondrian) conformal provides better tail coverage but requires complex segment calibration.
+**Decision:** Use Marginal Split Conformal for v1.0, but explicitly document and test the degradation in heteroscedastic tails (~70% coverage for high-risk segments).
+**Consequences:** Simpler implementation, but requires human escalation (G4) for high-uncertainty edge cases.
 
-## ADR-003: Heuristic Uncertainty (G4) before Full Conformal Prediction
-
-- **Status:** Accepted (Temporary)
-- **Context:** Real split-conformal prediction requires a trained base model and a held-out calibration set, which are not yet available in the synthetic pilot.
-- **Decision:** G4 currently uses a deterministic heuristic (base + fact penalty + DSTI penalty) to simulate uncertainty routing.
-- **Consequences:** The 5.0% threshold is arbitrary. Coverage is not statistically guaranteed. This is explicitly documented in `docs/LIMITATIONS.md` and slated for replacement in ROADMAP M2.
-
-## ADR-004: No Persistence in TrustPort
-
-- **Status:** Accepted
-- **Context:** Auditability is a core manifesto requirement, but mixing validation logic with storage creates tight coupling and statefulness.
-- **Decision:** TrustPort is purely functional and stateless. It returns `PortResult` objects. The caller (or a sidecar) is responsible for appending the result to the TrustAudit hash chain.
-- **Consequences:** TrustPort can be scaled horizontally without state synchronization. Auditability is guaranteed by the external contract, not internal implementation.
+## ADR-005: SQLite WAL for Local Audit Logging
+**Status:** Accepted
+**Context:** Audit logs must be durable and tamper-evident.
+**Decision:** Use SQLite in WAL (Write-Ahead Logging) mode with chained SHA-256 hashes. 
+**Consequences:** Provides crash recovery and basic tamper detection. Production deployments should wrap this in an append-only database or S3 with object lock.

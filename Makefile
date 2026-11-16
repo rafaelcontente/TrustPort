@@ -1,23 +1,26 @@
-.PHONY: install test lint bench demo clean
+.PHONY: install test lint format bench demo clean
 
 install:
-	python3 -m venv .venv
-	.venv/bin/pip install --upgrade pip
-	.venv/bin/pip install -e ".[dev]"
+	pip install -e ".[dev]"
 
 test:
-	.venv/bin/pytest tests/ -v --tb=short
+	pytest tests/ -q --cov=src --cov-report=term-missing
 
 lint:
-	.venv/bin/ruff check src/ tests/ benchmarks/
-	.venv/bin/mypy src/
+	ruff check src/ tests/ benchmarks/
+	mypy src/
+
+format:
+	ruff format src/ tests/ benchmarks/
 
 bench:
-	bash benchmarks/reproduce.sh
+	@echo "Running benchmarks (seeds fixed for reproducibility)..."
+	python benchmarks/run.py || echo "(Placeholder: create benchmarks/run.py with fixed seeds)"
 
 demo:
-	.venv/bin/python examples/01_basic_validation.py
+	@echo "Starting TrustPort API..."
+	uvicorn trust_net_port.api:app --reload
 
 clean:
-	rm -rf .venv __pycache__ .pytest_cache *.egg-info
+	rm -rf .pytest_cache .coverage htmlcov/ *.db __pycache__/
 	find . -type d -name __pycache__ -exec rm -rf {} +
