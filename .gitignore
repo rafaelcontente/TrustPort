@@ -3,6 +3,4 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 .coverage
-htmlcov/
-dist/
-build/
+.DS_Store
