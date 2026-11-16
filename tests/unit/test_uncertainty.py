@@ -1,6 +1,6 @@
-import pytest
 from trust_net_port.schema.contracts import AgentProposal
 from trust_net_port.validator import ConformalUncertaintyEstimator
+
 
 def test_uncertainty_estimator_base():
     est = ConformalUncertaintyEstimator(base_uncertainty=2.5)

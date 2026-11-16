@@ -1,5 +1,5 @@
-import numpy as np
-from .schema.contracts import AgentProposal, PortResult, OutcomeEnum
+from .schema.contracts import AgentProposal, OutcomeEnum, PortResult
+
 
 class ConformalUncertaintyEstimator:
     def __init__(self, base_uncertainty: float = 2.5, alpha: float = 0.10):

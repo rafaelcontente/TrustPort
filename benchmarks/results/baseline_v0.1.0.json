@@ -1,0 +1,17 @@
+{
+  "version": "0.1.0",
+  "dataset_size": 1000,
+  "seed": 42,
+  "outcomes": {
+    "APPROVED": 498,
+    "REPAIRED": 150,
+    "REFUSED": 150,
+    "ESCALATED": 202
+  },
+  "rates": {
+    "APPROVED": 0.498,
+    "REPAIRED": 0.15,
+    "REFUSED": 0.15,
+    "ESCALATED": 0.202
+  }
+}

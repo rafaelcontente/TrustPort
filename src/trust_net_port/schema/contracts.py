@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
-from typing import List, Optional
 from enum import Enum
+
+from pydantic import BaseModel
+
 
 class OutcomeEnum(str, Enum):
     APPROVED = "APPROVED"
@@ -15,12 +16,12 @@ class AgentProposal(BaseModel):
     amount: float
     term_months: int
     dsti_ratio: float
-    facts_cited: List[str]
+    facts_cited: list[str]
 
 class PortResult(BaseModel):
     outcome: OutcomeEnum
     reason_code: str
-    gates_passed: List[str]
-    gates_failed: List[str]
-    counterfactual: Optional[str] = None
-    explanation: Optional[str] = None
+    gates_passed: list[str]
+    gates_failed: list[str]
+    counterfactual: str | None = None
+    explanation: str | None = None

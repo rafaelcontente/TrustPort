@@ -1,8 +1,10 @@
 import json
 import random
 from pathlib import Path
+
 from trust_net_port.schema.contracts import AgentProposal
 from trust_net_port.validator import PortValidator
+
 
 def generate_synthetic_dataset(n=1000, seed=42):
     random.seed(seed)
@@ -52,6 +54,7 @@ def run_benchmark():
     }
     
     out_path = Path("benchmarks/results/baseline_v0.1.0.json")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(summary, indent=2))
     print(f"Benchmark complete. Results saved to {out_path}")
     print(json.dumps(summary, indent=2))

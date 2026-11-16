@@ -1,6 +1,6 @@
-import pytest
 import numpy as np
 from sklearn.calibration import calibration_curve
+
 
 def test_conformal_coverage_bounds():
     target_coverage = 0.90

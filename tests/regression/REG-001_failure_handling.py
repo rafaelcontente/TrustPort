@@ -1,6 +1,6 @@
-import pytest
 from trust_net_port.schema.contracts import AgentProposal, OutcomeEnum
 from trust_net_port.validator import PortValidator
+
 
 def test_invalid_schema_is_repaired():
     proposal = AgentProposal(proposal_id="P-001", case_id="C-0142", action="approve", amount=-100, term_months=60, dsti_ratio=30.0, facts_cited=["F-221"])

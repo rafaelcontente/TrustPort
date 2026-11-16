@@ -1,6 +1,6 @@
-import pytest
 from trust_net_port.schema.contracts import AgentProposal, OutcomeEnum
 from trust_net_port.validator import PortValidator
+
 
 def test_high_quality_proposal_passes_uncertainty_gate():
     proposal = AgentProposal(proposal_id="P-100", case_id="C-TEST", action="approve", amount=40000, term_months=60, dsti_ratio=25.0, facts_cited=["F-221", "F-222", "F-223"])

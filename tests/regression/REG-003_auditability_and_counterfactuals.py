@@ -1,6 +1,6 @@
-import pytest
 from trust_net_port.schema.contracts import AgentProposal, OutcomeEnum
 from trust_net_port.validator import PortValidator
+
 
 def test_refusal_contains_concrete_reasons():
     proposal = AgentProposal(proposal_id="P-004", case_id="C-0145", action="approve", amount=50000, term_months=60, dsti_ratio=45.0, facts_cited=["F-221"])
