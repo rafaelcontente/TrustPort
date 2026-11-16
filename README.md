@@ -2,7 +2,7 @@
 
 **Port: mandatory validation for AI outputs.**
 
-[![CI](https://github.com/rafaelcontente/TrustPort/actions/workflows/ci.yml/badge.svg)](https://github.com/rafaelcontente/TrustPort/actions)
+[![CI](https://github.com/rafaelcontente/TrustPort/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rafaelcontente/TrustPort/actions)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e)](LICENSE)
 [![Gates](https://img.shields.io/badge/gates-5_serial-8b5cf6)](docs/ARCHITECTURE.md)
