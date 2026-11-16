@@ -18,8 +18,6 @@ class AgentProposal(BaseModel):
     dsti_ratio: float
     facts_cited: list[str]
     correlation_id: str | None = None
-    shadow_outcome: str | None = None
-    shadow_reason_code: str | None = None
 
 class PortResult(BaseModel):
     outcome: OutcomeEnum
