@@ -11,6 +11,10 @@
 
 An LLM will happily approve a loan it should refuse — fluently, confidently, and without checking a single rule. In credit and compliance, that confidence is a liability, not a feature. TrustPort answers one question: *can this AI proposal provably reach a human — or must it be repaired, escalated, or refused?*
 
+## ✅ What it solves
+
+TrustPort replaces *trust the model* with *check the proposal*. Every AI output gets a deterministic verdict — 🟢 APPROVED, 🔵 REPAIRED, 🟠 ESCALATED or 🔴 REFUSED — plus a machine-readable reason code. Refusals ship with a counterfactual the customer can act on ("reduce DSTI to ≤ 40%"), never a bare no. Measured today: **100/100 invalid proposals blocked, zero silent approvals, every refusal explained**. The agent proposes; the Port decides.
+
 ## 🚫 What this is NOT
 
 Not a chatbot. Not a generic input validator. It is the gate between an LLM and the real world: every proposal is checked, every refusal is explained, every outcome is typed.
