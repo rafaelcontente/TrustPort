@@ -95,6 +95,7 @@ TrustPort is one gate in a larger trust layer. It speaks Pydantic contracts — 
 - 📊 [EVALUATION.md](docs/EVALUATION.md) — benchmarks and methodology
 - ⚠️ [LIMITATIONS.md](docs/LIMITATIONS.md) — what is proven and what is not
 - 🗺️ [ROADMAP.md](docs/ROADMAP.md) — SHAP explanations, conditional conformal
+- 🧠 [DESIGN_PHILOSOPHY.md](docs/DESIGN_PHILOSOPHY.md) — why every choice, and what was rejected
 - 🔌 [docs/api.md](docs/api.md) — contract reference
 
 ## 📄 License
