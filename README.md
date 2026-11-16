@@ -22,12 +22,13 @@ Not a chatbot. Not a generic input validator. It is the gate between an LLM and 
 ## ⚡ Quick Start
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -e .
-pytest tests/regression/ -v
+make test
 ```
 
-Four commands, under five minutes — nine regression tests prove the gate holds.
+Three commands, under five minutes — 54 regression tests prove the gate holds.
 
 ## 🏗️ Architecture
 
@@ -37,7 +38,7 @@ graph TD
     G1 -->|pass| G2{G2 Rules}
     G2 -->|pass| G3{G3 Z3 Solver}
     G3 -->|pass| G4{G4 Conformal}
-    G4 -->|pass| G5{G5 Explanation}
+    G4 -->|pass| G5{G5 Fidelity}
     G5 -->|pass| OK((APPROVED))
     G1 -->|fail| REP[REPAIRED]
     G2 -->|fail| REF[REFUSED]
@@ -53,23 +54,26 @@ One proposal, five serial gates, zero silent passes. The first gate to say no st
 
 ## 📊 Evaluation
 
-Baseline: synthetic credit pilot — 9 regression tests, all green. Only measured numbers appear here; no aspirational metrics.
+Baseline: synthetic credit pilot — 54 regression tests, all green. Only measured numbers appear here; no aspirational metrics.
 
 - 🚫 **100/100** invalid proposals blocked, zero slipped through as APPROVED (REG-001).
-- 💬 **100%** of refusals ship with an actionable counterfactual, not just a no (REG-003).
-- 🎯 **ECE < 0.05** on the synthetic calibration fixture (REG-002).
+- 💬 **100%** of refusals ship with an actionable counterfactual, not just a no (REG-003, REG-007).
+- 🎯 **Conformal coverage ~90%** on held-out test set (REG-006).
+- ⚡ **<5ms p50 latency**, >100 req/s throughput (REG-011).
 
 Full tables and methodology live in [EVALUATION.md](docs/EVALUATION.md).
 
 ## ⚠️ Limitations
 
-Honesty over hype — what is not done yet:
+Honesty over hype — what is done and what is not:
 
-- 🧪 G3 enforces formal Z3 constraints (e.g., high amount requires long term). G4 uses a deterministic uncertainty heuristic for the pilot, with a full Split-Conformal engine built and tested (see REG-006) pending a trained base model.; real Z3 proofs and split-conformal calibration are the next milestone.
+- ✅ **G3 (Z3 Solver):** Enforces formal constraints (e.g., high amount requires long term, max term bounds). Proven in REG-005, REG-018.
+- ✅ **G4 (Conformal):** Split Conformal Prediction engine with drift detection and segmented coverage validation (REG-006, REG-022). Live routing still uses heuristic proxy pending trained base model.
+- ✅ **Audit:** Immutable logging with chained SHA-256 hashes (REG-023).
 - 📉 Calibration runs on synthetic data, not production credit portfolios.
-- 🗂️ TrustPort validates but never stores; immutable logging belongs to TrustAudit.
+- 🗂️ TrustPort validates; immutable persistence belongs to TrustAudit deployment layer.
 
-Context and mitigations in [LIMITATIONS.md](docs/LIMITATIONS.md).
+Full context and evidence in [LIMITATIONS.md](docs/LIMITATIONS.md).
 
 ## 🧩 Composition
 
@@ -79,8 +83,8 @@ TrustPort is one gate in a larger trust layer. It speaks Pydantic contracts — 
 
 - 🏗️ [ARCHITECTURE.md](docs/ARCHITECTURE.md) — gates, contracts, fail-fast design
 - 📊 [EVALUATION.md](docs/EVALUATION.md) — benchmarks and methodology
-- ⚠️ [LIMITATIONS.md](docs/LIMITATIONS.md) — what is not proven yet
-- 🗺️ [ROADMAP.md](docs/ROADMAP.md) — real Z3, real conformal, SHAP explanations
+- ⚠️ [LIMITATIONS.md](docs/LIMITATIONS.md) — what is proven and what is not
+- 🗺️ [ROADMAP.md](docs/ROADMAP.md) — SHAP explanations, conditional conformal
 - 🔌 [docs/api.md](docs/api.md) — contract reference
 
 ## 📄 License

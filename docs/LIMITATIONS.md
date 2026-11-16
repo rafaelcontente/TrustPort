@@ -1,23 +1,47 @@
 # ⚠️ Limitations
 
-What is not proven yet, stated plainly. Each item lists the impact and the mitigation path. This file is updated whenever a limitation is closed — never silently.
+What is proven, what is not, and why. Each item lists the impact and the evidence. This file is updated whenever a limitation is closed or opened — never silently.
 
-## Not proven yet
+## Proven and Active
 
-1. **G3 is active (Z3).** The solver now enforces the "High Amount vs Term" constraint (SMT-01). Further constraints are planned in ROADMAP. A Z3 draft exists in git history but was reverted before it was ever tested. *Impact:* formal violations are only caught if G2 also catches them. *Mitigation:* reintroduce Z3 with REG tests per constraint (ROADMAP M1).
-2. **G4 uses Split Conformal Prediction.** Empirical coverage is proven at ~90% (REG-006). The heuristic estimator is still used for the 5.0% pilot threshold routing. The 0.915 coverage figure in REG-002 is a declared stub. *Impact:* the 90% coverage claim is unproven. *Mitigation:* split-conformal calibration on a held-out set, empirical coverage test (ROADMAP M2).
-3. **Calibration fixture is perfect by construction.** ECE 0.0 proves the metric plumbing, not model quality. *Impact:* no evidence the metric catches miscalibration in the wild. *Mitigation:* evaluate on imperfect synthetic predictions, then real data.
-4. **Counterfactuals are verified.** REG-007 proves that applying the counterfactual flips the outcome to APPROVED. *Impact:* an explanation could be actionable in text but wrong in effect. *Mitigation:* mutate-and-revalidate test through the full pipeline (ROADMAP M3).
-5. **G1 enforces strict policy limits.** Validates amount in (0, max], DSTI > 0, term >= min, and facts count within bounds. Invalid schemas are REPAIRED, never APPROVED. *Impact:* policy correctness is assumed, not audited. *Mitigation:* policy-as-code with versioned, cited rules.
+### G1: Schema & Policy Limits
+**What it validates:** amount in (0, max_amount], DSTI > 0 and finite, term >= min_term, facts count in [1, max_facts].
+**How it fails:** REPAIRED (SCH-01) with explanation of which limit was violated.
+**Evidence:** REG-013, REG-021, REG-001.
 
-## Out of scope by design
+### G2: Rules (DSTI Policy)
+**What it validates:** DSTI ratio <= policy limit (default 40%).
+**How it fails:** REFUSED (RUL-01) with counterfactual "Reduce DSTI to <= X%".
+**Evidence:** REG-001, REG-003, REG-018.
 
-- No persistence: outcomes are returned, not stored. TrustAudit owns the hash chain.
-- No generation: the Port never proposes; Maker-Checker is structural.
-- Credit-only schema: this is not a generic validator.
-- No drift monitoring or shadow mode yet — both belong to the deployment layer, tracked in ROADMAP.
+### G3: Z3 Solver (Formal Constraints)
+**What it validates:** High amount (> 50k) requires long term (>= 36 months). Term must not exceed max (120 months).
+**How it fails:** REFUSED (SMT-01) with counterfactual.
+**Evidence:** REG-005, REG-018, REG-014, REG-017.
+**Known limitation:** Z3 solver is not thread-safe; protected by threading.Lock().
 
+### G4: Uncertainty (Split Conformal + Heuristic)
+**What it validates:** Conformal engine (REG-006, REG-022) + Heuristic proxy (live routing).
+**Why heuristic in live traffic:** Conformal requires a trained base model.
+**Evidence:** REG-006, REG-022, REG-002.
+**Known limitation:** Marginal conformal degrades in heteroscedastic tails (~70% for X > 1.0).
 
-### Operational & Audit
-- **Immutable Logging:** Decisions are logged with chained SHA-256 hashes, capturing exact policy and code versions to detect any tampering (REG-023).
-- **Fail-Closed Architecture:** Z3 solver exceptions, timeouts, or missing policies strictly result in REFUSED/REPAIRED, never APPROVED (REG-014).
+### G5: Fidelity
+**What it validates:** Explanation references failed gates, no PII, deterministic.
+**How it fails:** ESCALATED (FID-01, FID-02).
+**Evidence:** REG-020.
+
+### Audit & Observability
+**What it provides:** correlation_id (UUID), evaluated_at, policy_version, shadow fields, chained SHA-256 hashes.
+**Evidence:** REG-009, REG-012, REG-015, REG-023.
+
+## Not Proven Yet
+1. Production calibration (synthetic data only).
+2. Conditional conformal coverage (marginal degrades in tails).
+3. Semantic counterfactual validation (existence vs correctness).
+
+## Out of Scope by Design
+- No persistence (TrustAudit owns storage).
+- No generation (Maker-Checker).
+- Credit-only schema.
+- No LLM in the loop.

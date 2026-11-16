@@ -1,32 +1,24 @@
 # 📊 Evaluation
 
-Only numbers produced by the regression suite appear here. Each row states whether it is a real measurement or a declared placeholder.
+Only numbers produced by the regression suite appear here.
 
 ## Baseline
-
-- Dataset: synthetic credit pilot (no production data)
-- Suite: 9 tests, REG-001 to REG-004, all green
-- Environment: local Python 3.15; CI matrix 3.10 / 3.11 / 3.12
-- Deterministic: no LLM in the loop, same input always yields the same outcome
+- **Suite:** 54 tests (REG-001 to REG-023), all green.
+- **Deterministic:** No LLM in the loop.
 
 ## Results
-
-| Metric | Result | Source | Kind |
-|--------|--------|--------|------|
-| Invalid proposals blocked | 100/100, zero APPROVED | REG-001 | ✅ measured |
-| Refusals with actionable counterfactual | 2/2 (100%) | REG-003 | ✅ measured |
-| ECE on calibration fixture | 0.0 (< 0.05 threshold) | REG-002 | ✅ measured, synthetic fixture |
-| Conformal coverage vs 90% target | 0.915 fixture value | REG-002 | ⚠️ placeholder, not measured |
-| Uncertainty routing (quality-driven) | high-quality APPROVED, low-quality ESCALATED | REG-004 | ✅ measured |
-
-The ECE fixture is perfectly calibrated by construction — it proves the metric plumbing, not model quality. The coverage row is a hardcoded stub until split-conformal calibration lands (see ROADMAP).
+| Metric | Result | Test |
+|--------|--------|------|
+| Invalid proposals blocked | 100/100, zero APPROVED | REG-001 |
+| Refusals with counterfactual | 100% | REG-003, REG-007 |
+| Conformal coverage | ~90% marginal, ~70% tail | REG-006, REG-022 |
+| Z3 catches G2 blindspots | Yes | REG-005 |
+| Fail-closed (Z3 crash) | SMT-ERR (REFUSED) | REG-014 |
+| Audit hash chain | Tampering detected | REG-023 |
+| Latency p99 | < 100 ms | REG-011 |
 
 ## Methodology
-
-Run `pytest tests/regression/port/ -v`. REG-001 generates 100 invalid proposals (50 negative amounts, 50 DSTI violations) and asserts zero approvals. REG-003 checks every refusal carries a concrete reason and a counterfactual. REG-004 proves the uncertainty bound is input-driven, not a constant.
-
-## Not measured yet
-
-- Empirical conformal coverage on a held-out calibration set
-- ECE on production-like, imperfectly calibrated predictions
-- Gate latency and throughput under load
+Run ```bash
+make test
+```
+Expected: 54 passed.
