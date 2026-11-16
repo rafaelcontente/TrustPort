@@ -2,10 +2,17 @@
 
 **Port: mandatory validation for AI outputs.**
 
-[![CI](https://github.com/rafaelcontente/TrustPort/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rafaelcontente/TrustPort/actions)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab?logo=python&logoColor=white)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-22c55e)](LICENSE)
-[![Gates](https://img.shields.io/badge/gates-5_serial-8b5cf6)](docs/ARCHITECTURE.md)
+[![CI](https://github.com/rafaelcontente/TrustPort/actions/workflows/ci.yml/badge.svg?branch=main&style=for-the-badge)](https://github.com/rafaelcontente/TrustPort/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-84%25-brightgreen?style=for-the-badge&logo=codecov)](https://github.com/rafaelcontente/TrustPort)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![Z3 Verified](https://img.shields.io/badge/Z3-formal_verification-purple?style=for-the-badge&logo=github)](https://github.com/Z3Prover/z3)
+[![Hypothesis](https://img.shields.io/badge/Hypothesis-property_testing-orange?style=for-the-badge)](https://hypothesis.readthedocs.io/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Ruff](https://img.shields.io/badge/ruff-formatted-41B883?style=for-the-badge&logo=ruff)](https://docs.astral.sh/ruff/)
+[![Mypy](https://img.shields.io/badge/mypy-type_checked-2B65EC?style=for-the-badge&logo=mypy)](https://mypy-lang.org/)
+[![License](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/rafaelcontente/TrustPort?style=for-the-badge&logo=git)](https://github.com/rafaelcontente/TrustPort/commits/main/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge&logo=github)](https://github.com/rafaelcontente/TrustPort/pulls)
 
 ## 🎯 The Problem
 
