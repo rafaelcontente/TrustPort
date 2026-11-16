@@ -71,7 +71,8 @@ class PortValidator:
                 is_valid, reason = verify_constraints(
                     proposal,
                     self.rules["high_amount_threshold"],
-                    self.rules["min_term_for_high_amount"]
+                    self.rules["min_term_for_high_amount"],
+                    self.rules.get("max_term_months", 120)
                 )
         except Exception as e:  # noqa: BLE001
             gates_failed.append("G3_SOLVER")

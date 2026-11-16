@@ -24,4 +24,4 @@ def test_g3_z3_rejects_what_g2_allows():
     assert result.outcome == OutcomeEnum.REFUSED
     assert result.reason_code == "SMT-01"
     assert "G3_SOLVER" in result.gates_failed
-    assert "High amount" in result.explanation
+    assert "SMT-01" in result.reason_code and "formal constraints" in result.explanation
