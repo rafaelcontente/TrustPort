@@ -1,4 +1,3 @@
-from trust_net_port.pii_redactor import redact_proposal_pii
 import json
 import math
 import re
@@ -6,6 +5,8 @@ import threading
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
+
+from trust_net_port.pii_redactor import redact_proposal_pii
 
 from .schema.contracts import AgentProposal, OutcomeEnum, PortResult
 from .solver.z3_verifier import verify_constraints
