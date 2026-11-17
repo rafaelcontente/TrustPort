@@ -17,7 +17,7 @@ MOCK_CLIENT_DB = {
         "employment_status": "Permanent",
         "credit_score": 750,
         "existing_debt": 5000.0,
-        "payment_history": "No defaults in the last 5 years"
+        "payment_history": "No defaults in the last 5 years",
     },
     "CLI-002": {
         "client_id": "CLI-002",
@@ -25,8 +25,8 @@ MOCK_CLIENT_DB = {
         "employment_status": "Probation",
         "credit_score": 620,
         "existing_debt": 15000.0,
-        "payment_history": "1 default in the last 2 years"
-    }
+        "payment_history": "1 default in the last 2 years",
+    },
 }
 
 
@@ -34,9 +34,9 @@ MOCK_CLIENT_DB = {
 def fetch_client_credit_history(client_id: str) -> str:
     """Fetches real credit history and employment data for a given client_id.
     Use this to gather factual evidence before submitting a proposal to validate_proposal."""
-    
+
     client_data = MOCK_CLIENT_DB.get(client_id)
-    
+
     if not client_data:
         # Generate realistic mock data for unknown IDs to keep the demo flowing
         client_data = {
@@ -45,9 +45,9 @@ def fetch_client_credit_history(client_id: str) -> str:
             "employment_status": random.choice(["Permanent", "Contract", "Self-employed"]),
             "credit_score": random.randint(600, 850),
             "existing_debt": round(random.uniform(0, 20000), 2),
-            "payment_history": "Clean record" if random.random() > 0.2 else "Minor delay 2 years ago"
+            "payment_history": "Clean record" if random.random() > 0.2 else "Minor delay 2 years ago",
         }
-    
+
     return json.dumps(client_data, indent=2, ensure_ascii=False)
 
 

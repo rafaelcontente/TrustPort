@@ -1,9 +1,13 @@
+version: '3.8'
+
 services:
-  trustport:
+  trustport-api:
     build: .
+    ports:
+      - "8000:8000"
     volumes:
-      - ./benchmarks/results:/app/benchmarks/results
-    command: bash benchmarks/reproduce.sh
-  test:
-    build: .
-    command: pytest tests/ -v --tb=short
+      # Persist the SQLite audit database between container restarts
+      - ./audit.db:/app/audit.db
+    environment:
+      - PYTHONPATH=/app/src
+    restart: unless-stopped

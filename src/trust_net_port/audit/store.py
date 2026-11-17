@@ -23,7 +23,8 @@ class AuditStore:
         """Create table with WAL mode for durability."""
         conn = sqlite3.connect(self.db_path)
         conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("""
+        conn.execute(
+            """
             CREATE TABLE IF NOT EXISTS audit_log (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 proposal_id TEXT NOT NULL,
@@ -38,7 +39,8 @@ class AuditStore:
                 hash TEXT NOT NULL,
                 created_at REAL NOT NULL
             )
-        """)
+        """
+        )
         conn.commit()
         conn.close()
 
@@ -99,11 +101,13 @@ class AuditStore:
         """Verify integrity of entire chain. Returns True if valid."""
         conn = sqlite3.connect(self.db_path)
         conn.execute("PRAGMA journal_mode=WAL")
-        cursor = conn.execute("""
+        cursor = conn.execute(
+            """
             SELECT proposal_id, outcome, reason_code, gates_passed, gates_failed,
                    policy_version, code_version, evaluated_at, prev_hash, hash
             FROM audit_log ORDER BY id ASC
-        """)
+        """
+        )
 
         rows = cursor.fetchall()
         conn.close()
