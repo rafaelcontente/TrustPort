@@ -1,0 +1,11 @@
+# TrustPort Business Rules Policy
+# Altere estes valores e chame POST /admin/reload-policy para aplicar sem reiniciar.
+
+rules:
+  max_dsti_ratio: 0.40
+  min_amount: 500.0
+  max_amount: 1000000.0
+  min_term_months: 6
+  max_term_months: 120
+  min_facts_required: 1
+  max_facts_allowed: 20

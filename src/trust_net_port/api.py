@@ -65,3 +65,15 @@ def get_stats():
         "total_decisions": audit_store.count(),
         "chain_valid": audit_store.verify_chain(),
     }
+
+
+@app.post("/admin/reload-policy", tags=["admin"])
+def reload_policy():
+    """Hot-reload business rules from policy.yaml without restarting the server."""
+    try:
+        from trust_net_port.policy_manager import policy
+
+        new_rules = policy.reload()
+        return {"status": "success", "message": "Policy reloaded", "rules": new_rules}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to reload policy: {str(e)}")
