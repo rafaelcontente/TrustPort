@@ -1,10 +1,11 @@
 """Tests for fairness reporting functions."""
+
 import json
-import pytest
+
 from trust_net_port.fairness.metrics import (
-    generate_fairness_report,
-    export_fairness_report_json,
     check_fairness_thresholds,
+    export_fairness_report_json,
+    generate_fairness_report,
 )
 
 
@@ -17,7 +18,7 @@ def test_generate_fairness_report_pass():
         "statistical_parity_difference": 0.05,
     }
     checks = check_fairness_thresholds(metrics)
-    
+
     report = generate_fairness_report(
         metrics=metrics,
         checks=checks,
@@ -26,7 +27,7 @@ def test_generate_fairness_report_pass():
         unprivileged_group_name="female",
         sample_size=1000,
     )
-    
+
     assert "FAIRNESS & BIAS DETECTION REPORT" in report
     assert "gender" in report
     assert "Sample Size: 1000" in report
@@ -43,14 +44,14 @@ def test_generate_fairness_report_fail():
         "statistical_parity_difference": 0.15,
     }
     checks = check_fairness_thresholds(metrics)
-    
+
     report = generate_fairness_report(
         metrics=metrics,
         checks=checks,
         protected_attribute_name="age",
         sample_size=500,
     )
-    
+
     assert "BIAS DETECTED" in report
     assert "potential bias against the unprivileged group" in report
 
@@ -64,17 +65,17 @@ def test_export_fairness_report_json():
         "statistical_parity_difference": 0.0,
     }
     checks = check_fairness_thresholds(metrics)
-    
+
     json_str = export_fairness_report_json(
         metrics=metrics,
         checks=checks,
         protected_attribute_name="ethnicity",
         sample_size=2000,
     )
-    
+
     # Verify it's valid JSON
     report_dict = json.loads(json_str)
-    
+
     assert report_dict["overall_fair"] is True
     assert report_dict["sample_size"] == 2000
     assert report_dict["protected_attribute"] == "ethnicity"
