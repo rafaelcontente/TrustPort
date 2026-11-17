@@ -1,6 +1,8 @@
 """Dynamic Policy Manager for TrustPort."""
-import yaml
+
 from pathlib import Path
+
+import yaml
 
 
 class PolicyManager:

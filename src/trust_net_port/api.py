@@ -3,6 +3,7 @@
 Exposes the validation pipeline as a REST API with automatic OpenAPI spec.
 """
 
+import yaml
 from fastapi import FastAPI, HTTPException
 from pydantic import ValidationError
 
@@ -43,7 +44,7 @@ def validate_proposal(proposal: AgentProposal) -> PortResult:
 
     except ValidationError as e:
         raise HTTPException(status_code=422, detail=str(e))
-    except Exception as e:  # noqa: BLE001
+    except (yaml.YAMLError, OSError) as e:
         # Isto vai imprimir o erro real no terminal do Uvicorn
         import traceback
 
@@ -75,5 +76,5 @@ def reload_policy():
 
         new_rules = policy.reload()
         return {"status": "success", "message": "Policy reloaded", "rules": new_rules}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to reload policy: {str(e)}")
+    except (yaml.YAMLError, OSError) as e:
+        raise HTTPException(status_code=500, detail=f"Failed to reload policy: {e!s}")
