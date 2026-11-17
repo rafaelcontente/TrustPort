@@ -1,3 +1,4 @@
+from trust_net_port.pii_redactor import redact_proposal_pii
 import json
 import math
 import re
@@ -35,6 +36,11 @@ class PortValidator:
         self.shadow_mode = enabled
 
     def validate(self, proposal: AgentProposal) -> PortResult:
+        # GATE 0: PII Redaction (GDPR Compliance)
+        proposal_dict = proposal.model_dump()
+        redacted_dict = redact_proposal_pii(proposal_dict)
+        proposal = AgentProposal(**redacted_dict)
+
         gates_passed: list[str] = []
         gates_failed: list[str] = []
         pv = self.policy["version"]
