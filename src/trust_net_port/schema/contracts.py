@@ -9,6 +9,7 @@ class OutcomeEnum(str, Enum):
     ESCALATED = "ESCALATED"
     REFUSED = "REFUSED"
 
+
 class AgentProposal(BaseModel):
     proposal_id: str
     case_id: str
@@ -18,6 +19,7 @@ class AgentProposal(BaseModel):
     dsti_ratio: float
     facts_cited: list[str]
     correlation_id: str | None = None
+
 
 class PortResult(BaseModel):
     outcome: OutcomeEnum
@@ -31,3 +33,4 @@ class PortResult(BaseModel):
     correlation_id: str | None = None
     shadow_outcome: str | None = None
     shadow_reason_code: str | None = None
+    audit_hash: str | None = None  # <--- CAMPO ADICIONADO AQUI

@@ -16,7 +16,8 @@ class ConformalUncertaintyEstimator:
 
     def calculate_upper_bound(self, proposal: AgentProposal) -> float:
         fact_penalty = max(0, (3 - len(proposal.facts_cited))) * 1.5
-        dsti_penalty = max(0, (proposal.dsti_ratio - 30.0) / 10.0) * 2.0
+        # Corrigido para formato decimal (ex: 0.45 - 0.30)
+        dsti_penalty = max(0, (proposal.dsti_ratio - 0.30) / 0.10) * 2.0
         return self.base_uncertainty + fact_penalty + dsti_penalty
 
 
@@ -60,15 +61,15 @@ class PortValidator:
             ))
         gates_passed.append("G1_SCHEMA")
 
-        # Gate 2: Rules
-        max_dsti = self.rules["max_dsti_ratio"] * 100
+        # Gate 2: Rules (CORRIGIDO: removido o * 100 para comparar decimal com decimal)
+        max_dsti = self.rules["max_dsti_ratio"]  # ex: 0.40
         if proposal.dsti_ratio > max_dsti:
             gates_failed.append("G2_RULES")
             return self._apply_shadow(PortResult(
                 outcome=OutcomeEnum.REFUSED, reason_code="RUL-01",
                 gates_passed=gates_passed, gates_failed=gates_failed,
-                counterfactual=f"Reduce DSTI to <= {max_dsti}%",
-                explanation=f"DSTI ratio {proposal.dsti_ratio}% exceeds policy limit of {max_dsti}%.",
+                counterfactual=f"Reduce DSTI to <= {max_dsti * 100:.0f}%",
+                explanation=f"DSTI ratio {proposal.dsti_ratio * 100:.0f}% exceeds policy limit of {max_dsti * 100:.0f}%.",
                 policy_version=pv, evaluated_at=evaluated_at, correlation_id=corr_id
             ))
         gates_passed.append("G2_RULES")
@@ -109,29 +110,27 @@ class PortValidator:
                 outcome=OutcomeEnum.ESCALATED, reason_code="UNC-02",
                 gates_passed=gates_passed, gates_failed=gates_failed,
                 counterfactual="Provide more cited facts or reduce amount to lower uncertainty bound.",
-                explanation=f"Uncertainty upper bound ({upper_bound}%) exceeds pilot threshold (5.0%).",
+                explanation=f"Uncertainty upper bound ({upper_bound:.1f}%) exceeds pilot threshold (5.0%).",
                 policy_version=pv, evaluated_at=evaluated_at, correlation_id=corr_id
             ))
         gates_passed.append("G4_UNCERTAINTY")
 
         # Gate 5: Fidelity (real validation)
-        # Determinar a explicação baseada nos gates falhados
         if gates_failed:
             last_failed = gates_failed[-1]
             if last_failed == "G1_SCHEMA":
                 explanation = "Invalid schema: amount and DSTI must be strictly positive and finite, and at least one fact must be cited."
             elif last_failed == "G2_RULES":
-                explanation = f"DSTI ratio {proposal.dsti_ratio}% exceeds policy limit of {max_dsti}%."
+                explanation = f"DSTI ratio {proposal.dsti_ratio * 100:.0f}% exceeds policy limit of {max_dsti * 100:.0f}%."
             elif last_failed == "G3_SOLVER":
                 explanation = reason if 'reason' in locals() else "Violates formal constraints."
             elif last_failed == "G4_UNCERTAINTY":
-                explanation = f"Uncertainty upper bound ({upper_bound if 'upper_bound' in locals() else 'N/A'}%) exceeds pilot threshold (5.0%)."
+                explanation = f"Uncertainty upper bound ({upper_bound:.1f}%) exceeds pilot threshold (5.0%)."
             else:
                 explanation = "Unknown failure."
         else:
             explanation = "Proposal meets all schema, rule, formal, and uncertainty criteria."
         
-        # Validação G5.1: Explicação deve mencionar gates falhados (se houver)
         if gates_failed and not any(gate in explanation for gate in gates_failed):
             gates_failed.append("G5_FIDELITY")
             return self._apply_shadow(PortResult(
@@ -141,10 +140,6 @@ class PortValidator:
                 policy_version=pv, evaluated_at=evaluated_at, correlation_id=corr_id
             ))
         
-        # Validação G5.2: Counterfactual deve ser consistente com o motivo
-        # (Já garantido pela lógica do validator, mas validamos se existe)
-        
-        # Validação G5.3: Sem PII (emails, telefones, etc.)
         pii_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|\d{9,}'
         if re.search(pii_pattern, explanation):
             gates_failed.append("G5_FIDELITY")
@@ -165,7 +160,6 @@ class PortValidator:
         ))
 
     def _apply_shadow(self, result: PortResult) -> PortResult:
-        # Shadow mode NEVER alters the primary execution outcome.
         if self.shadow_mode:
             result.shadow_outcome = result.outcome.value
             result.shadow_reason_code = result.reason_code

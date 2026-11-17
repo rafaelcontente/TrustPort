@@ -28,12 +28,26 @@ def validate_proposal(proposal: AgentProposal) -> PortResult:
     Every refusal includes an actionable counterfactual.
     """
     try:
+        # 1. Validar a proposta
         result = validator.validate(proposal)
-        audit_store.log(result)
+        
+        # 2. Guardar na auditoria e obter o hash
+        audit_hash = audit_store.log(result)
+        
+        # 3. Atualizar o modelo Pydantic de forma segura (Pydantic v2)
+        # Nota: Se 'audit_hash' não for um campo em PortResult, isto dará erro.
+        # É por isso que preciso de ver o contracts.py no Passo 1.
+        result = result.model_copy(update={"audit_hash": audit_hash})
+        
         return result
+        
     except ValidationError as e:
         raise HTTPException(status_code=422, detail=str(e))
     except Exception as e:  # noqa: BLE001
+        # Isto vai imprimir o erro real no terminal do Uvicorn
+        import traceback
+        print(f"❌ ERRO INTERNO NO VALIDATOR: {e}")
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Internal error: {e!s}")
 
 
