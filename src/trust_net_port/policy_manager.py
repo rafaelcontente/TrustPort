@@ -8,7 +8,7 @@ import yaml
 class PolicyManager:
     def __init__(self, policy_path: str = "src/trust_net_port/policy.yaml"):
         self.policy_path = Path(policy_path)
-        self._policy = {}
+        self._policy: dict = {}
         self.reload()
 
     def reload(self) -> dict:
