@@ -56,7 +56,7 @@ report = generate_fairness_report(
     protected_attribute_name="gender",
     privileged_group_name="male",
     unprivileged_group_name="female",
-    sample_size=n_samples
+    sample_size=n_samples,
 )
 print(report)
 
@@ -81,9 +81,7 @@ y_true = np.random.choice([0, 1], size=n_samples, p=[0.5, 0.5])
 
 # Predictions: 80% positive for privileged, 20% positive for unprivileged (BIASED)
 y_pred = np.where(
-    protected_attribute == 1,
-    np.random.choice([0, 1], size=n_samples, p=[0.8, 0.2]),
-    np.random.choice([0, 1], size=n_samples, p=[0.2, 0.8])
+    protected_attribute == 1, np.random.choice([0, 1], size=n_samples, p=[0.8, 0.2]), np.random.choice([0, 1], size=n_samples, p=[0.2, 0.8])
 )
 
 print(f"      Sample size: {n_samples}")
@@ -101,7 +99,7 @@ report = generate_fairness_report(
     protected_attribute_name="race",
     privileged_group_name="group_a",
     unprivileged_group_name="group_b",
-    sample_size=n_samples
+    sample_size=n_samples,
 )
 print(report)
 
@@ -115,12 +113,7 @@ print("SCENARIO 3: EXPORT FAIRNESS REPORT TO JSON")
 print("=" * 80)
 
 print("\n[1/1] Exporting fairness report as JSON...")
-json_report = export_fairness_report_json(
-    metrics=metrics,
-    checks=checks,
-    protected_attribute_name="race",
-    sample_size=n_samples
-)
+json_report = export_fairness_report_json(metrics=metrics, checks=checks, protected_attribute_name="race", sample_size=n_samples)
 print(json_report)
 
 

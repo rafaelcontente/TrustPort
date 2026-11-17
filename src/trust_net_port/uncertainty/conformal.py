@@ -1,4 +1,3 @@
-
 import numpy as np
 from sklearn.base import BaseEstimator
 
@@ -12,8 +11,8 @@ class SplitConformalPredictor:
         self.calibration_residuals: np.ndarray | None = None
 
     def calibrate(self, X_cal: np.ndarray, y_cal: np.ndarray) -> None:
-        if not hasattr(self.base_model, 'coef_'):
-            raise RuntimeError('Model must be fit on training data before calibration.')
+        if not hasattr(self.base_model, "coef_"):
+            raise RuntimeError("Model must be fit on training data before calibration.")
         y_pred_cal = self.base_model.predict(X_cal)
         self.calibration_residuals = np.abs(y_cal - y_pred_cal)
         n = len(self.calibration_residuals)
@@ -29,7 +28,7 @@ class SplitConformalPredictor:
 
     def check_drift(self, X_new: np.ndarray, y_new: np.ndarray, threshold: float = 0.05) -> bool:
         if self.calibration_residuals is None:
-            raise RuntimeError('Must calibrate before checking drift.')
+            raise RuntimeError("Must calibrate before checking drift.")
         y_pred_new = self.base_model.predict(X_new)
         new_residuals = np.abs(y_new - y_pred_new)
         mean_cal = np.mean(self.calibration_residuals)

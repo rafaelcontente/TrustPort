@@ -5,9 +5,13 @@ from trust_net_port.validator import PortValidator
 def test_integration_valid_proposal_passes_all_gates():
     validator = PortValidator()
     proposal = AgentProposal(
-        proposal_id="P-INT-1", case_id="C-INT-1", action="approve",
-        amount=30000.0, term_months=48, dsti_ratio=32.0,
-        facts_cited=["F-101", "F-102", "F-103", "F-104"]
+        proposal_id="P-INT-1",
+        case_id="C-INT-1",
+        action="approve",
+        amount=30000.0,
+        term_months=48,
+        dsti_ratio=0.32,
+        facts_cited=["F-101", "F-102", "F-103", "F-104"],
     )
     result = validator.validate(proposal)
     assert result.outcome == OutcomeEnum.APPROVED
@@ -18,12 +22,11 @@ def test_integration_valid_proposal_passes_all_gates():
     assert "G4_UNCERTAINTY" in result.gates_passed
     assert "G5_FIDELITY" in result.gates_passed
 
+
 def test_integration_invalid_proposal_fails_fast():
     validator = PortValidator()
     proposal = AgentProposal(
-        proposal_id="P-INT-2", case_id="C-INT-2", action="approve",
-        amount=-500.0, term_months=12, dsti_ratio=10.0,
-        facts_cited=[]
+        proposal_id="P-INT-2", case_id="C-INT-2", action="approve", amount=-500.0, term_months=12, dsti_ratio=0.10, facts_cited=[]
     )
     result = validator.validate(proposal)
     assert result.outcome == OutcomeEnum.REPAIRED

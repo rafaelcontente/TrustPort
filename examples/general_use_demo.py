@@ -55,13 +55,16 @@ conformal = SplitConformalPredictor(base_model=base_model, alpha=0.10)
 conformal.calibrate(X_cal, y_cal)
 print("      Conformal Predictor ready (90% coverage guarantee).")
 
+
 # 3. Define Domain-Specific Schema
 class PropertyProposal(BaseModel):
     """AI proposal for a house price prediction."""
+
     property_id: str
     ai_predicted_price: float = Field(..., gt=0, description="Must be positive")
     square_meters: float = Field(..., gt=0, description="Must be positive")
     features: list[float] = Field(..., min_items=8, max_items=8, description="8 California Housing features")
+
 
 # 4. Define Domain-Specific Validator
 class PropertyValidator:
@@ -80,8 +83,13 @@ class PropertyValidator:
         price_per_sqm = proposal.ai_predicted_price / proposal.square_meters
         if price_per_sqm > self.max_price_per_sqm:
             gates_failed.append("G2_RULES")
-            return self._result(OutcomeEnum.REFUSED, "RUL-01", gates_passed, gates_failed,
-                                f"Price per sqm ({price_per_sqm:.0f}) exceeds limit ({self.max_price_per_sqm})")
+            return self._result(
+                OutcomeEnum.REFUSED,
+                "RUL-01",
+                gates_passed,
+                gates_failed,
+                f"Price per sqm ({price_per_sqm:.0f}) exceeds limit ({self.max_price_per_sqm})",
+            )
         gates_passed.append("G2_RULES")
 
         # G4: Conformal Uncertainty (Is the prediction within bounds?)
@@ -89,8 +97,9 @@ class PropertyValidator:
         lower, _pred, upper = self.conformal.predict_interval(features_array)
         if proposal.ai_predicted_price < lower[0] or proposal.ai_predicted_price > upper[0]:
             gates_failed.append("G4_UNCERTAINTY")
-            return self._result(OutcomeEnum.ESCALATED, "UNC-02", gates_passed, gates_failed,
-                                f"Prediction outside 90% CI [{lower[0]:.0f}, {upper[0]:.0f}]")
+            return self._result(
+                OutcomeEnum.ESCALATED, "UNC-02", gates_passed, gates_failed, f"Prediction outside 90% CI [{lower[0]:.0f}, {upper[0]:.0f}]"
+            )
         gates_passed.append("G4_UNCERTAINTY")
 
         # All gates passed
@@ -98,13 +107,18 @@ class PropertyValidator:
 
     def _result(self, outcome, reason, passed, failed, explanation, proposal_id="unknown"):
         result = PortResult(
-            outcome=outcome, reason_code=reason,
-            gates_passed=passed, gates_failed=failed,
-            explanation=explanation, policy_version="1.0", evaluated_at="2024-01-01T00:00:00Z",
-            correlation_id="demo-prop-01"
+            outcome=outcome,
+            reason_code=reason,
+            gates_passed=passed,
+            gates_failed=failed,
+            explanation=explanation,
+            policy_version="1.0",
+            evaluated_at="2024-01-01T00:00:00Z",
+            correlation_id="demo-prop-01",
         )
         self.audit.log(result)
         return result
+
 
 # 5. Run Scenarios
 print("[3/5] Running validation scenarios...")
@@ -116,7 +130,7 @@ valid_proposal = PropertyProposal(
     property_id="PROP-001",
     ai_predicted_price=2.5,  # Median price is ~2.0
     square_meters=100,
-    features=X_test[0].tolist()
+    features=X_test[0].tolist(),
 )
 result = validator.validate(valid_proposal)
 print(f"      Outcome: {result.outcome.value} | Reason: {result.reason_code}")
@@ -127,7 +141,7 @@ invalid_proposal = PropertyProposal(
     property_id="PROP-002",
     ai_predicted_price=2000000.0,  # Absurdly high
     square_meters=100,
-    features=X_test[0].tolist()
+    features=X_test[0].tolist(),
 )
 result = validator.validate(invalid_proposal)
 print(f"      Outcome: {result.outcome.value} | Reason: {result.reason_code}")
@@ -138,7 +152,7 @@ uncertain_proposal = PropertyProposal(
     property_id="PROP-003",
     ai_predicted_price=0.1,  # Too low for this feature set
     square_meters=100,
-    features=X_test[0].tolist()
+    features=X_test[0].tolist(),
 )
 result = validator.validate(uncertain_proposal)
 print(f"      Outcome: {result.outcome.value} | Reason: {result.reason_code}")
@@ -152,13 +166,16 @@ print("\n" + "=" * 80)
 print("SCENARIO 2: GENERIC VALIDATION (No Data, Any Domain)")
 print("=" * 80)
 
+
 # 1. Define Generic Schema
 class GenericProposal(BaseModel):
     """Generic AI proposal for any domain."""
+
     proposal_id: str
     action: str = Field(..., description="approve, refuse, escalate")
     payload: dict = Field(..., description="Domain-specific data as JSON")
     facts_cited: list[str] = Field(..., min_items=1, description="Sources for the decision")
+
 
 # 2. Define Generic Validator
 class GenericValidator:
@@ -190,13 +207,18 @@ class GenericValidator:
 
     def _result(self, outcome, reason, passed, failed, explanation, proposal_id="unknown"):
         result = PortResult(
-            outcome=outcome, reason_code=reason,
-            gates_passed=passed, gates_failed=failed,
-            explanation=explanation, policy_version="1.0", evaluated_at="2024-01-01T00:00:00Z",
-            correlation_id=proposal_id
+            outcome=outcome,
+            reason_code=reason,
+            gates_passed=passed,
+            gates_failed=failed,
+            explanation=explanation,
+            policy_version="1.0",
+            evaluated_at="2024-01-01T00:00:00Z",
+            correlation_id=proposal_id,
         )
         self.audit.log(result)
         return result
+
 
 # 3. Run Generic Scenarios
 print("\n[4/5] Running generic validation scenarios...")
@@ -205,10 +227,7 @@ gen_validator = GenericValidator()
 # Scenario 2A: Valid generic proposal
 print("\n[Scenario 2A] Valid generic proposal...")
 valid_generic = GenericProposal(
-    proposal_id="GEN-001",
-    action="approve",
-    payload={"diagnosis": "flu", "confidence": 0.95},
-    facts_cited=["medical-guideline-2024"]
+    proposal_id="GEN-001", action="approve", payload={"diagnosis": "flu", "confidence": 0.95}, facts_cited=["medical-guideline-2024"]
 )
 result = gen_validator.validate(valid_generic)
 print(f"      Outcome: {result.outcome.value} | Reason: {result.reason_code}")
@@ -219,7 +238,7 @@ invalid_generic = GenericProposal(
     proposal_id="GEN-002",
     action="maybe",  # Invalid
     payload={"diagnosis": "flu"},
-    facts_cited=["medical-guideline-2024"]
+    facts_cited=["medical-guideline-2024"],
 )
 result = gen_validator.validate(invalid_generic)
 print(f"      Outcome: {result.outcome.value} | Reason: {result.reason_code}")

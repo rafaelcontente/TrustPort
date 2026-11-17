@@ -23,7 +23,7 @@ def test_validate_approved_proposal():
         "action": "approve",
         "amount": 10000.0,
         "term_months": 12,
-        "dsti_ratio": 30.0,
+        "dsti_ratio": 0.30,
         "facts_cited": ["F-1", "F-2", "F-3"],
     }
     response = client.post("/validate", json=proposal)
@@ -42,7 +42,7 @@ def test_validate_refused_proposal():
         "action": "approve",
         "amount": 10000.0,
         "term_months": 12,
-        "dsti_ratio": 50.0,  # Exceeds 40% limit
+        "dsti_ratio": 0.50,  # Exceeds 40% limit
         "facts_cited": ["F-1", "F-2", "F-3"],
     }
     response = client.post("/validate", json=proposal)
@@ -62,7 +62,7 @@ def test_validate_invalid_schema():
         "action": "approve",
         "amount": -1000.0,  # Invalid: negative amount
         "term_months": 12,
-        "dsti_ratio": 30.0,
+        "dsti_ratio": 0.30,
         "facts_cited": ["F-1"],
     }
     response = client.post("/validate", json=proposal)

@@ -43,9 +43,13 @@ from trust_net_port.schema.contracts import AgentProposal
 from trust_net_port.validator import PortValidator
 
 proposal = AgentProposal(
-    proposal_id='P-001', case_id='C-0142', action='approve',
-    amount=40000.0, term_months=60, dsti_ratio=36.0,
-    facts_cited=['F-221', 'F-340', 'F-500'],
+    proposal_id="P-001",
+    case_id="C-0142",
+    action="approve",
+    amount=40000.0,
+    term_months=60,
+    dsti_ratio=36.0,
+    facts_cited=["F-221", "F-340", "F-500"],
 )
 result = PortValidator().validate(proposal)
 print(result.outcome, result.reason_code)

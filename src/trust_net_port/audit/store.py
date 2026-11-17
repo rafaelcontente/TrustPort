@@ -46,12 +46,12 @@ class AuditStore:
         """Persist decision and return new hash."""
         conn = sqlite3.connect(self.db_path)
         conn.execute("PRAGMA journal_mode=WAL")
-        
+
         # Fetch last hash
         cursor = conn.execute("SELECT hash FROM audit_log ORDER BY id DESC LIMIT 1")
         row = cursor.fetchone()
         prev_hash = row[0] if row else "GENESIS"
-        
+
         # Build log entry
         entry = {
             "proposal_id": result.correlation_id or "UNKNOWN",
@@ -64,30 +64,33 @@ class AuditStore:
             "evaluated_at": result.evaluated_at or "",
             "prev_hash": prev_hash,
         }
-        
+
         # Compute hash
         payload = json.dumps(entry, sort_keys=True, separators=(",", ":"))
         new_hash = hashlib.sha256(f"{payload}{prev_hash}".encode()).hexdigest()
-        
+
         # Insert
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO audit_log 
             (proposal_id, outcome, reason_code, gates_passed, gates_failed, 
              policy_version, code_version, evaluated_at, prev_hash, hash, created_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            entry["proposal_id"],
-            entry["outcome"],
-            entry["reason_code"],
-            json.dumps(entry["gates_passed"]),
-            json.dumps(entry["gates_failed"]),
-            entry["policy_version"],
-            entry["code_version"],
-            entry["evaluated_at"],
-            entry["prev_hash"],
-            new_hash,
-            time.time(),
-        ))
+        """,
+            (
+                entry["proposal_id"],
+                entry["outcome"],
+                entry["reason_code"],
+                json.dumps(entry["gates_passed"]),
+                json.dumps(entry["gates_failed"]),
+                entry["policy_version"],
+                entry["code_version"],
+                entry["evaluated_at"],
+                entry["prev_hash"],
+                new_hash,
+                time.time(),
+            ),
+        )
         conn.commit()
         conn.close()
         return new_hash
@@ -101,21 +104,31 @@ class AuditStore:
                    policy_version, code_version, evaluated_at, prev_hash, hash
             FROM audit_log ORDER BY id ASC
         """)
-        
+
         rows = cursor.fetchall()
         conn.close()
-        
+
         if not rows:
             return True
-        
+
         current_hash = "GENESIS"
         for row in rows:
-            (proposal_id, outcome, reason_code, gates_passed, gates_failed,
-             policy_version, code_version, evaluated_at, prev_hash, stored_hash) = row
-            
+            (
+                proposal_id,
+                outcome,
+                reason_code,
+                gates_passed,
+                gates_failed,
+                policy_version,
+                code_version,
+                evaluated_at,
+                prev_hash,
+                stored_hash,
+            ) = row
+
             if prev_hash != current_hash:
                 return False
-            
+
             entry = {
                 "proposal_id": proposal_id,
                 "outcome": outcome,
@@ -129,10 +142,10 @@ class AuditStore:
             }
             payload = json.dumps(entry, sort_keys=True, separators=(",", ":"))
             current_hash = hashlib.sha256(f"{payload}{prev_hash}".encode()).hexdigest()
-            
+
             if current_hash != stored_hash:
                 return False
-        
+
         return True
 
     def count(self) -> int:

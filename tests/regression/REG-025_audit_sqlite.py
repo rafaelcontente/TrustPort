@@ -12,9 +12,13 @@ def test_sqlite_persistence(tmp_path):
     store = AuditStore(db_path=db_path, code_version="2.0.0")
     validator = PortValidator()
     proposal = AgentProposal(
-        proposal_id="P-SQL-01", case_id="C-SQL-01", action="approve",
-        amount=10000.0, term_months=12, dsti_ratio=30.0,
-        facts_cited=["F-1", "F-2", "F-3"]
+        proposal_id="P-SQL-01",
+        case_id="C-SQL-01",
+        action="approve",
+        amount=10000.0,
+        term_months=12,
+        dsti_ratio=0.30,
+        facts_cited=["F-1", "F-2", "F-3"],
     )
     result = validator.validate(proposal)
     store.log(result)
@@ -31,9 +35,13 @@ def test_chain_integrity_after_tampering(tmp_path):
     validator = PortValidator()
     for i in range(3):
         proposal = AgentProposal(
-            proposal_id=f"P-TAMPER-{i}", case_id=f"C-TAMPER-{i}", action="approve",
-            amount=10000.0, term_months=12, dsti_ratio=30.0,
-            facts_cited=["F-1", "F-2", "F-3"]
+            proposal_id=f"P-TAMPER-{i}",
+            case_id=f"C-TAMPER-{i}",
+            action="approve",
+            amount=10000.0,
+            term_months=12,
+            dsti_ratio=0.30,
+            facts_cited=["F-1", "F-2", "F-3"],
         )
         store.log(validator.validate(proposal))
     assert store.verify_chain()

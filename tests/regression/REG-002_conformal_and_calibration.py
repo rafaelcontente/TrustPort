@@ -7,6 +7,7 @@ def test_conformal_coverage_bounds():
     empirical_coverage = 0.915
     assert abs(empirical_coverage - target_coverage) <= 0.02, "Coverage must be within +/- 2% of target."
 
+
 def test_expected_calibration_error():
     y_true = np.array([1, 1, 1, 1, 1, 0, 0, 0, 0, 0])
     y_prob = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0])
