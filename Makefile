@@ -14,7 +14,7 @@ run-mcp: ## Start the MCP server (for Claude Desktop)
 	PYTHONPATH=src .venv/bin/python mcp_server.py
 
 test: ## Run all tests with coverage
-	PYTHONPATH=src .venv/bin/pytest tests/ --cov=src/trust_net_port --cov-fail-under=75 -q
+	PYTHONPATH=src .venv/bin/pytest tests/ --cov=src/trust_net_port --cov-fail-under=80 -q
 
 lint: ## Run ruff linter and formatter
 	.venv/bin/ruff check src/ tests/
