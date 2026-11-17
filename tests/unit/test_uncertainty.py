@@ -1,4 +1,5 @@
 import pytest
+
 from trust_net_port.schema.contracts import AgentProposal
 from trust_net_port.validator import ConformalUncertaintyEstimator
 
